@@ -1,11 +1,15 @@
-# credentials/token
-client_secrets.json
-*.dat
-
-# Others
-gmb_discovery.json
-mybusiness/
-myenv/
-bin/
-vendor/
-composer*
+node_modules/
+.next/
+out/
+build/
+*.log
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.DS_Store
+.vscode/
+.idea/
+*.tsbuildinfo
+next-env.d.ts.bak
