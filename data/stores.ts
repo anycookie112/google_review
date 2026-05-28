@@ -1,25 +1,14 @@
-/**
- * Configured franchise store locations.
- *
- * To wire up real Google Places API data:
- *   1. Find each store on Google Maps.
- *   2. Copy the Place ID (use https://developers.google.com/maps/documentation/places/web-service/place-id
- *      or the Place ID Finder tool).
- *   3. Paste it into `googlePlaceId` below.
- *
- * If GOOGLE_MAPS_API_KEY is not set in the environment, the app runs in Mock Mode
- * and these placeholder IDs are ignored.
- */
-export interface StoreConfig {
-  id: string;
-  displayName: string;
-  city: string;
-  region: string;
-  managerName: string;
-  googlePlaceId: string;
-}
+import type { StoreConfig } from "@/types";
 
-export const stores: StoreConfig[] = [
+/**
+ * Default store seed data.
+ *
+ * On first boot, when the `stores` table is empty, the app inserts these rows
+ * into Postgres automatically. After that, the database becomes the source of
+ * truth and editing this file will not change existing environments unless you
+ * reset the table.
+ */
+export const seedStores: StoreConfig[] = [
   {
     id: "klcc",
     displayName: "Demo Franchise - KLCC",

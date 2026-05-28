@@ -48,7 +48,7 @@ export function ReviewCard({ review, storeName, googleMapsUrl }: ReviewCardProps
 
       <div className="mt-4 rounded-md bg-slate-50 border border-slate-200 p-3">
         <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">
-          Suggested reply (demo)
+          Reply suggestion
         </div>
         <p className="mt-1 text-sm text-slate-800 whitespace-pre-wrap">
           {review.suggestedReply}

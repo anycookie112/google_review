@@ -6,13 +6,23 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:prod": "./scripts/start-production.sh",
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down",
+    "db:logs": "docker compose logs -f db",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "funnel": "node scripts/funnel.mjs",
+    "dev:funnel": "node scripts/funnel.mjs",
     "tunnel": "node scripts/tunnel.mjs",
     "dev:tunnel": "node scripts/tunnel.mjs --start-dev"
   },
   "dependencies": {
+    "@types/pg": "^8.20.0",
+    "bcryptjs": "^3.0.3",
+    "jose": "^6.2.3",
     "next": "14.2.18",
+    "pg": "^8.21.0",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },

@@ -1,5 +1,4 @@
-import type { StoreConfig } from "@data/stores";
-import type { Review, StoreWithReviews } from "@/types";
+import type { Review, StoreConfig, StoreWithReviews } from "@/types";
 import { buildSuggestedReply, deriveSentiment, deriveStatus } from "@/lib/demoLogic";
 import type { ReviewProvider } from "./ReviewProvider";
 

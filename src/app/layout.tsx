@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getCurrentUser } from "@/lib/auth";
+import { countPendingApprovals } from "@/lib/db/users";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Reviews Monitor — Franchise Demo",
+  title: "Reviews Monitor",
   description:
-    "Monitor Google reviews across franchise locations. Proof-of-concept demo using Google Places API.",
+    "Monitor Google reviews across franchise locations with a protected internal dashboard.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const user = await getCurrentUser();
+  const pendingApprovals = user?.role === "admin" ? await countPendingApprovals() : 0;
+
   return (
     <html lang="en">
       <body>
@@ -24,13 +29,49 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </div>
                 <div className="leading-tight">
                   <div className="font-semibold text-slate-900">Reviews Monitor</div>
-                  <div className="text-xs text-slate-500">Franchise demo</div>
+                  <div className="text-xs text-slate-500">
+                    {user ? "Internal workspace" : "Secure sign-in"}
+                  </div>
                 </div>
               </div>
-              <nav className="flex items-center gap-1 text-sm">
-                <NavLink href="/">Dashboard</NavLink>
-                <NavLink href="/reviews">Reviews inbox</NavLink>
-              </nav>
+              {user ? (
+                <div className="flex items-center gap-3">
+                  <nav className="flex items-center gap-1 text-sm">
+                    <NavLink href="/dashboard">Dashboard</NavLink>
+                    <NavLink href="/reviews">Reviews inbox</NavLink>
+                    {user.role === "admin" ? (
+                      <>
+                        <NavLink
+                          href="/admin/users"
+                          badge={pendingApprovals > 0 ? pendingApprovals : undefined}
+                        >
+                          Admin
+                        </NavLink>
+                        <NavLink href="/admin/stores">Stores</NavLink>
+                        <NavLink href="/admin/sync">Sync</NavLink>
+                        <NavLink href="/admin/google">Google</NavLink>
+                      </>
+                    ) : null}
+                  </nav>
+                  <div className="hidden sm:block text-right">
+                    <div className="text-sm font-medium text-slate-800">{user.displayName}</div>
+                    <div className="text-xs text-slate-500">{user.email}</div>
+                  </div>
+                  <form action="/api/auth/logout" method="post">
+                    <button
+                      type="submit"
+                      className="px-3 py-1.5 rounded-md text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition"
+                    >
+                      Sign out
+                    </button>
+                  </form>
+                </div>
+              ) : (
+                <nav className="flex items-center gap-1 text-sm">
+                  <NavLink href="/login">Sign in</NavLink>
+                  <NavLink href="/register">Register</NavLink>
+                </nav>
+              )}
             </div>
           </header>
           <main className="flex-1">
@@ -38,8 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </main>
           <footer className="border-t border-slate-200 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 text-xs text-slate-500">
-              Demo build. Public review data only. Not for production use without
-              Google Business Profile API integration.
+              Authenticated workspace with Postgres-backed users, stores, and synced review data.
             </div>
           </footer>
         </div>
@@ -48,13 +88,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   );
 }
 
-function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+function NavLink({
+  href,
+  children,
+  badge,
+}: {
+  href: string;
+  children: React.ReactNode;
+  badge?: number;
+}) {
   return (
     <Link
       href={href}
-      className="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition"
+      className="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition inline-flex items-center gap-2"
     >
       {children}
+      {badge ? (
+        <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-amber-500 px-1.5 py-0.5 text-[11px] font-semibold text-white">
+          {badge}
+        </span>
+      ) : null}
     </Link>
   );
 }

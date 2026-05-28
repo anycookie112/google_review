@@ -1,0 +1,11 @@
+.git
+.next
+node_modules
+.env
+.env.local
+npm-debug.log
+app.log
+funnel.log
+start.log
+progress
+notes

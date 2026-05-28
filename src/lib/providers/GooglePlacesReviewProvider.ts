@@ -1,5 +1,4 @@
-import type { StoreConfig } from "@data/stores";
-import type { Review, ReviewsApiError, StoreWithReviews } from "@/types";
+import type { Review, ReviewsApiError, StoreConfig, StoreWithReviews } from "@/types";
 import { buildSuggestedReply, deriveSentiment, deriveStatus } from "@/lib/demoLogic";
 import type { ReviewProvider } from "./ReviewProvider";
 
@@ -66,7 +65,7 @@ export class GooglePlacesReviewProvider implements ReviewProvider {
       return {
         kind: "error",
         store,
-        message: "Place ID is not configured. Edit data/stores.ts to add it.",
+        message: "Place ID is not configured for this store in the database.",
       };
     }
 

@@ -1,5 +1,4 @@
-import type { StoreConfig } from "@data/stores";
-import type { ReviewsApiError, StoreWithReviews } from "@/types";
+import type { ReviewsApiError, StoreConfig, StoreWithReviews } from "@/types";
 
 /**
  * Provider abstraction. Any source of review data (Google Places, Google

@@ -1,7 +1,8 @@
 // SERVER-ONLY: do not import this file from a client component. It reads
 // GOOGLE_MAPS_API_KEY from process.env and would leak it into the browser
 // bundle. Client components must call /api/places/reviews instead.
-import { stores } from "@data/stores";
+import { getLatestSyncRun, hasPersistedReviewData, listPersistedStoresWithReviews } from "@/lib/db/reviews";
+import { listActiveStores } from "@/lib/db/stores";
 import { resolveProvider } from "@/lib/providers";
 import type { ReviewsApiResponse } from "@/types";
 
@@ -14,8 +15,34 @@ import type { ReviewsApiResponse } from "@/types";
  * MUST NOT import this file, since it would leak server-only code to the bundle.
  */
 export async function loadReviewsPayload(): Promise<ReviewsApiResponse> {
-  const { provider, mode } = resolveProvider();
+  const hasPersistedData = await hasPersistedReviewData();
+  if (hasPersistedData) {
+    const [data, latestSyncRun] = await Promise.all([
+      listPersistedStoresWithReviews(true),
+      getLatestSyncRun(),
+    ]);
+
+    return {
+      mode: latestSyncRun?.providerMode ?? "mock",
+      data,
+      errors: data
+        .filter(
+          (store) =>
+            store.lastReviewSyncStatus === "failed" &&
+            typeof store.lastReviewSyncAt === "string" &&
+            store.sourceMode,
+        )
+        .map((store) => ({
+          storeId: store.storeId,
+          storeName: store.storeName,
+          message: `Last sync failed at ${store.lastReviewSyncAt}. Check store mapping or the Google connection.`,
+        })),
+    };
+  }
+
+  const { provider, mode } = await resolveProvider();
   try {
+    const stores = await listActiveStores();
     const { data, errors } = await provider.getStoresWithReviews(stores);
     return { mode, data, errors };
   } catch (err) {

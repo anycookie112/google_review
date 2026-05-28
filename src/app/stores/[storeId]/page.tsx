@@ -29,7 +29,7 @@ export default async function StoreDetailPage({
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <Link href="/" className="text-xs text-brand-600 hover:underline">
+        <Link href="/dashboard" className="text-xs text-brand-600 hover:underline">
           ← Back to dashboard
         </Link>
         <ModeBadge mode={mode} />
@@ -68,7 +68,11 @@ export default async function StoreDetailPage({
           label="Public reviews"
           value={store.totalReviewCount?.toLocaleString() ?? "—"}
         />
-        <StatCard label="Visible reviews" value={total} hint="From Places API sample" />
+        <StatCard
+          label="Visible reviews"
+          value={total}
+          hint={mode === "business_profile" ? "Returned from Business Profile" : "From Places API sample"}
+        />
         <StatCard
           label="Negative visible"
           value={totals.negative}
@@ -105,7 +109,11 @@ export default async function StoreDetailPage({
         {store.reviews.length === 0 ? (
           <EmptyState
             title="No reviews returned"
-            hint="The Places API did not return any review samples for this place."
+            hint={
+              mode === "business_profile"
+                ? "No reviews were returned for this Business Profile location."
+                : "The Places API did not return any review samples for this place."
+            }
           />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

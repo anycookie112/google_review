@@ -9,6 +9,16 @@ export function ModeBadge({ mode }: { mode: ProviderMode }) {
       </span>
     );
   }
+
+  if (mode === "business_profile") {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-100 text-sky-800 px-2.5 py-1 text-xs font-medium">
+        <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
+        Business Profile Mode
+      </span>
+    );
+  }
+
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium">
       <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />

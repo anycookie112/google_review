@@ -1,0 +1,24 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-reviews_monitor}
+      POSTGRES_USER: ${POSTGRES_USER:-reviews_monitor}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-reviews_monitor}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - reviews_monitor_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-reviews_monitor} -d ${POSTGRES_DB:-reviews_monitor}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  reviews_monitor_postgres:
